@@ -16,23 +16,23 @@ The 10-character string can be deconstructed to determine who is authorized to a
 
 For example, the file permissions for project_t.txt are -rw-rw-r--. Since the first character is a hyphen (-), this indicates that project_t.txt is a file, not a directory. The second, fifth, and eighth characters are all r, which indicates that user, group, and other all have read permissions. The third and sixth characters are w, which indicates that only the user and group have write permissions. No one has execute permissions for project_t.txt.
 ## Change file permissions
-The organization determined that other shouldn't have write access to any of their files. To comply with this, I referred to the file permissions that I previously returned. I determined project_k.txt must have the write access removed for other.
+TBased on the audit, I found that project_k.txt had write permissions enabled for others, which went against the organization's access policy.
 
 The following code demonstrates how I used Linux commands to do this:
 
 ![](FP2.png)
 
-The first two lines of the screenshot display the commands I entered, and the other lines display the output of the second command. The chmod command changes the permissions on files and directories. The first argument indicates what permissions should be changed, and the second argument specifies the file or directory. In this example, I removed write permissions from other for the project_k.txt file. After this, I used ls -la to review the updates I made.
+To correct this, I used the chmod command to remove write access from the "other" user category. After applying the change, I re-ran ls -la to confirm that the updated permissions correctly reflected the restricted access. This helped ensure that only authorized users could modify the file.
 ## Change file permissions on a hidden file
-The research team at my organization recently archived project_x.txt. They do not want anyone to have write access to this project, but the user and group should have read access. 
+The hidden file .project_x.txt had recently been archived, and the team wanted to ensure it was protected from modification. The requirement was that no one—neither user, group, nor others—should have write access, but both the user and group should retain read access.
 
 The following code demonstrates how I used Linux commands to change the permissions:
 
 ![](FP3.png)
 
-The first two lines of the screenshot display the commands I entered, and the other lines display the output of the second command. I know .project_x.txt is a hidden file because it starts with a period (.). In this example, I removed write permissions from the user and group, and added read permissions to the group. I removed write permissions from the user with u-w. Then, I removed write permissions from the group with g-w, and added read permissions to the group with g+r. 
+To implement this, I used a series of chmod commands: first to remove write permissions from the user and group, then to explicitly reassign read access to the group. This sequence allowed me to apply fine-grained control over the file's accessibility while preserving visibility for authorized team members.
 ## Change directory permissions
-My organization only wants the researcher2 user to have access to the drafts directory and its contents. This means that no one other than researcher2 should have execute permissions.
+Restricting access to the drafts directory was another important task, as it contained sensitive project materials meant only for the researcher2 user.
 
 The following code demonstrates how I used Linux commands to change the permissions:
 
@@ -40,6 +40,5 @@ The following code demonstrates how I used Linux commands to change the permissi
 
 The output here displays the permission listing for several files and directories. Line 1 indicates the current directory (projects), and line 2 indicates the parent directory (home). Line 3 indicates a regular file titled .project_x.txt. Line 4 is the directory (drafts) with restricted permissions. Here you can see that only researcher2 has execute permissions.  It was previously determined that the group had execute permissions, so I used the chmod command to remove them. The researcher2 user already had execute permissions, so they did not need to be added.
 ## Summary
-I changed multiple permissions to match the level of authorization my organization wanted for files and directories in the projects directory. The first step in this was using ls -la to check the permissions for the directory. This informed my decisions in the following steps. I then used the chmod command multiple times to change the permissions on files and directories.
-
+Throughout this task, I reviewed and modified file and directory permissions using standard Linux commands to enforce security best practices. I began by auditing the existing settings with ls -la, which provided a clear overview of access levels across the projects directory. Based on these findings, I used chmod to update permissions on individual files and directories, ensuring that access was limited to the appropriate users and groups.
 
